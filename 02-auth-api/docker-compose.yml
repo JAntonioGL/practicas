@@ -1,0 +1,15 @@
+services:
+  api_node24_experimentojs:
+    build: .
+    container_name: api_node24_experimetojs
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
+    networks:
+      - experimento_network
+
+networks:
+  experimento_network:
+    driver: bridge
