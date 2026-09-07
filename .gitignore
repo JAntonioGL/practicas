@@ -1,1 +1,9 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Variables de entorno (Secretos y configuraciones locales)
 .env
+
+# Archivos de datos locales (evita subir datos de prueba o de usuarios reales)
+02-auth-api/data/users.json
