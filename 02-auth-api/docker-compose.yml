@@ -5,8 +5,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/home/app
-      - /home/app/node_modules
+      - ./index.js:/home/app/index.js
+      - ./src:/home/app/src
+      - ./utils:/home/app/utils
+      - ./package.json:/home/app/package.json
+
     networks:
       - experimento_network
 
