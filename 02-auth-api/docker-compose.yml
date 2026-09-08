@@ -20,14 +20,15 @@ services:
   dv_postgres17:
     image: postgres:17.11-alpine3.24 #postgres 17
     environment:
-      #variables minimas requeridas
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: quierodostacos17
-      POSTGRES_DB: experimentsdb
+      #variables minimas requeridas (ahora importadas desde tu .env o las de defecto que ponemos aquí)
+      POSTGRES_USER: ${DB_ROOT_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD:-quierodostacos17}
+      POSTGRES_DB: ${POSTGRES_DB:-experimentsdb}
     ports:
       - "5432:5432" #puerto default para db
     volumes:
       - db_posgre17:/var/lib/postgresql/data #ruta al almacenamiento postgres
+      - ./db_init:/docker-entrypoint-initdb.d # <--- NUEVA LÍNEA PARA EL INIT
     networks:
       - experimento_network #misma red para que se vean
 
@@ -37,4 +38,4 @@ networks:
     driver: bridge
 
 volumes:
-  db_posgre17:
+  db_posgre17: #volumen para perseverar los datos de la db
