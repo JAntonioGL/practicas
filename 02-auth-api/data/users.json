@@ -712,5 +712,19 @@
     "correo": "prueba2@yoverifico.com",
     "fmc_token": "fmc_token_demo_102",
     "password_hash": "$2b$10$yZR7XiExVjVEF.WzRkhsLe8l8Um6XGXUIvXfIfG0MRncL2l.QHW/2"
+  },
+  {
+    "id_usuario": 103,
+    "nombre": "Prueba Antigravity3",
+    "correo": "prueba3@yoverifico.com",
+    "fmc_token": "fmc_token_demo_103",
+    "password_hash": "$2b$10$athg3DExxlUmA.2U3o.yK.fO3xSKluavkFITRXkIwgOboR7eZefGS"
+  },
+  {
+    "id_usuario": 104,
+    "nombre": "Prueba Antigravity4",
+    "correo": "prueba4@yoverifico.com",
+    "fmc_token": "fmc_token_demo_104",
+    "password_hash": "$2b$10$q1VcUirAFahUJjzpo4NJLOFrWWlXzytxpXCTTmGLYvcPtLsO1y4fa"
   }
 ]
