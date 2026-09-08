@@ -1,8 +1,8 @@
-const express = require('express');
-const userRoutes = require('./routes/userRoutes.js')
-const app = express();
+const express = require('express'); //importamos express
+const userRoutes = require('./routes/userRoutesJSON.js') //importamos las rutas de usuariosJSON
+const app = express(); //definimos la app express
 
-app.use(express.json())
-app.use('/api/users',userRoutes);
+app.use(express.json())//middleware para que todo sea JSON en las peticiones
+app.use('/api/JSON/users', userRoutes);//Definimos las rutas para usarlas con un prefijo
 
-module.exports = app;
+module.exports = app; //exportamos la app
