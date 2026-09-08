@@ -1,15 +1,40 @@
 services:
+  #nombre del servicio
   api_node24_experimentojs:
-    build: .
-    container_name: api_node24_experimetojs
+    build: . #construye basado en dockerfile
+    container_name: api_node24_experimetojs #nombre del contenedor
     ports:
-      - "3000:3000"
+      - "3000:3000" #de mi puerto 3000 al 3000 del contenedor
     volumes:
-      - .:/home/app
-      - /home/app/node_modules
+      #hacemos un copy manual de cada ruta para que no colisione con pnpm, un volumen anonimo causa condlicto en windows
+      - ./index.js:/home/app/index.js
+      - ./src:/home/app/src
+      - ./utils:/home/app/utils
+      - ./package.json:/home/app/package.json
+      - ./data:/home/app/data
+
     networks:
-      - experimento_network
+      - experimento_network #una red interna de docker para experimentos
+
+  #una basesita para no andar manipulando jsons
+  dv_postgres17:
+    image: postgres:17.11-alpine3.24 #postgres 17
+    environment:
+      #variables minimas requeridas
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: quierodostacos17
+      POSTGRES_DB: experimentsdb
+    ports:
+      - "5432:5432" #puerto default para db
+    volumes:
+      - db_posgre17:/var/lib/postgresql/data #ruta al almacenamiento postgres
+    networks:
+      - experimento_network #misma red para que se vean
 
 networks:
   experimento_network:
+    #red interna para experimentos
     driver: bridge
+
+volumes:
+  db_posgre17:
