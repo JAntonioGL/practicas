@@ -12,6 +12,9 @@ services:
       - ./utils:/home/app/utils
       - ./package.json:/home/app/package.json
       - ./data:/home/app/data
+      - ./config:/home/app/config
+      - ./services:/home/app/services
+      - ./.env:/home/app/.env
 
     networks:
       - experimento_network #una red interna de docker para experimentos
@@ -19,6 +22,7 @@ services:
   #una basesita para no andar manipulando jsons
   dv_postgres17:
     image: postgres:17.11-alpine3.24 #postgres 17
+    container_name: dv_postgres17 #nombramos al contenedor para ubicarlo en la red
     environment:
       #variables minimas requeridas (ahora importadas desde tu .env o las de defecto que ponemos aquí)
       POSTGRES_USER: ${DB_ROOT_USER:-admin}
