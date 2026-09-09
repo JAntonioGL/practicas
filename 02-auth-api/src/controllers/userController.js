@@ -1,10 +1,10 @@
-const userStorage = require('../utils/userStorage.js'); //importación de las funciones para leer y escribir el json
+const userServices = require('../services/userService.js'); //importación de las funciones para leer y escribir el json
 const bcrypt = require('bcryptjs');//importación del modulo bycript para usar encrpitación
 
 //función para obtener los usuarios 
-async function getAllUsers(req, res) {
+async function getAllUsersDB(req, res) {
   try {
-    const users = await userStorage.getUsers(); //obtenemos del json los ususarios
+    const users = await userServices.getUsersDb(); //obtenemos de la db los ususarios
     // console.log(users)
     res.status(200).json({ //respuesta para el estado de la petición
       status: 'success',
@@ -30,25 +30,23 @@ async function registerUser(req, res) {
       return res.status(400).json({ error: "Incomplete data" })
     } //verificamos que esten los 3 datos requeridos
 
-    const users = await userStorage.getUsers(); //obtenemos el json con los usuarios hasta ahora
-    const exists = users.find((user) => user.correo === email); //revisamos si el usuario ya existe
-    if (exists !== undefined) {
+    const exists = await userServices.findUserByEmailDb(email);//revisamos si el usuario ya existe
+    if (exists) {
       return res.status(400).json({ error: "User have been register yet before" }) //si el usuario existe retornamos error
     }
     //si no existe continuamos...
     const hash = await bcrypt.hash(password, 10); //usamos bcrypt para hashear el password
-    const idNewUser = users.length + 1; //variable para el id de usuario tomando en cuenta cuantos hay + 1
 
     const userNew = {
-      id_usuario: idNewUser,
       nombre: name,
       correo: email,
-      fmc_token: "fmc_token_demo_" + idNewUser,
-      password_hash: hash
+      password_hash: hash,
+      google_uid: "demo",
+      fmc_token: "fmc_token_demo_"
+
     }; //armamos el objeto con los datos para el nuevo usuario
 
-    users.push(userNew); //lo insertamos al final del arreglo de usuarios
-    await userStorage.saveUsers(users); //guardamos el json nuevo
+    await userServices.pushUserDB(userNew); //lo insertamos en la DB
     res.status(200).json({ status: "success", message: "Usuario registrado" }); //mensaje de confirmación de la petición
 
   }
@@ -61,4 +59,4 @@ async function registerUser(req, res) {
 }
 
 //exportación de funciones
-module.exports = { getAllUsers, registerUser }
+module.exports = { getAllUsersDB, registerUser }

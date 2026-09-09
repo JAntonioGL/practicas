@@ -23,7 +23,7 @@ async function getAllUsers(req, res) {
 
 //función para registrar un usuario nuevo
 async function registerUser(req, res) {
-  console.log("entraron a registrar") //log para bitacora
+  console.log("entraron a registrar JSON") //log para bitacora
   const { name, email, password } = req.body; //de request tomamos los datos enviados
   try {
     if (!name || !email || !password) {

@@ -4,7 +4,7 @@ const userController = require('../controllers/userController.js'); //importaci�
 
 const router = express.Router(); //definici처n para las rutas en express
 
-router.get('/', userController.getAllUsers);//petici처n GET para obtener los usuarios existentes
+router.get('/', userController.getAllUsersDB);//petici처n GET para obtener los usuarios existentes
 router.post('/register', userController.registerUser)//petici처n POST para guardar un usuario
 
 module.exports = router; //exportaci처n de las rutas

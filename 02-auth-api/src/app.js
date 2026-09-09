@@ -1,6 +1,6 @@
 const express = require('express'); //importamos express
 const userRoutesJSON = require('./routes/userRoutesJSON.js') //importamos las rutas de usuariosJSON
-const userRoutes = require('./routes/userRoutesJSON.js') //importamos las rutas de usuariosJSON
+const userRoutes = require('./routes/userRoutes.js') //importamos las rutas de usuariosJSON
 
 const app = express(); //definimos la app express
 
