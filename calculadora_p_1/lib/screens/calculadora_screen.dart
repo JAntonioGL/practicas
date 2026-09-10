@@ -17,8 +17,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   double? _primerNumero; // // guarda el primer calor y el signo ? nos dice que puede ser un valor nulo
   String _operador =
       ''; // guarda  el operador aritmetico que quiere usar '+', '-', '*', '/'
-  bool _esperandoNuevoNumero =
-      false; // Indica si el siguiente toque limpia la patalla o no
+  bool _esperandoNuevoNumero = false; // Indica si el siguiente toque limpia la patalla o no es como una bandera
 
   //------------------------------------------------------------------------
   //haremos una función limpiar, como no es una función matematica no se coloca en calculadora_core.dart, sino aqui mismo en la clase
@@ -27,10 +26,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   //
   void _limpiar() {
     setState(() {
-      _pantalla = '0';
-      _primerNumero = null;
-      _operador = '';
-      _esperandoNuevoNumero = false;
+      _pantalla = '0'; // regresa a 0 en la pantalla
+      _primerNumero = null; //lo ponemos en nulo para que no tenga valor
+      _operador = ''; //deja en blanco el operador
+      _esperandoNuevoNumero =
+          false; //indica si el siguiente toque limpia la patalla o no
     });
   }
 
@@ -54,7 +54,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             //digamos que expanded es un envoltorio que ocupa todo el espacio disponible para su widget hijo
             child: Container(
               //container es un widget multiproposito que se usa para agrupar otros widgets y darle propiedades como color, tamaño, etc
-              alignment: Alignment(bottomRight),
+              alignment: Alignment.bottomRight,
               padding: const EdgeInsets.all(24.0),
               child: Text(
                 _pantalla,
@@ -69,19 +69,86 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           ),
           const Divider(color: Colors.blueGrey, height: 1),
 
-          //Aqui colocaremos las filas o rows de botones que conforman el teclado de la calculadora
+          //Aqui colocaremos las filas o rows de botones que conforman el teclado de la calculadora-------------------------------------------
           //Fila 1. empezamos con al primer fila de botones limpiar y dividir
           Row(
             children: [
               _construirBoton(
                 texto: 'C',
                 colorFondo: Colors.red[700],
+                alPresionar: _limpiar, //aqui llamamos a la función de limpiar se llama así porque es un eventoonPressed a este tipo de llamada de función se llama
+                //pasar una refrencia de la función, si se pone con parentesis _limpiar() se ejecutaria inmediatamente al compilar el codigo.
+              ),
+
+              _construirBoton(
+                texto: '+',
+                colorFondo: Colors.orange[800],
                 alPresionar: () {
-                  //aqui llamamos a la función de operar
+                  //Aquí llamaremos a la función de operación
                 },
               ),
             ],
           ), //termina la primer fila
+          // Fila 2: 7, 8, 9 y Multiplicación--------------------------------------------------------
+          Row(
+            children: [
+              _construirBoton(
+                texto: '7',
+                alPresionar: () {
+                  // Aquí agregaremos el '7' a la pantalla
+                },
+              ),
+              _construirBoton(texto: '8', alPresionar: () {}),
+              _construirBoton(texto: '9', alPresionar: () {}),
+              _construirBoton(
+                texto: '×',
+                colorFondo: Colors.orange[800],
+                alPresionar: () {},
+              ),
+            ],
+          ), //Termina la segunda fila
+          // Fila 3: 4, 5, 6 y Resta------------------------------------
+          Row(
+            children: [
+              _construirBoton(texto: '4', alPresionar: () {}),
+              _construirBoton(texto: '5', alPresionar: () {}),
+              _construirBoton(texto: '6', alPresionar: () {}),
+              _construirBoton(
+                texto: '-',
+                colorFondo: Colors.orange[800],
+                alPresionar: () {},
+              ),
+            ],
+          ),
+
+          // Fila 4: 1, 2, 3 y Suma
+          Row(
+            children: [
+              _construirBoton(texto: '1', alPresionar: () {}),
+              _construirBoton(texto: '2', alPresionar: () {}),
+              _construirBoton(texto: '3', alPresionar: () {}),
+              _construirBoton(
+                texto: '+',
+                colorFondo: Colors.orange[800],
+                alPresionar: () {},
+              ),
+            ],
+          ),
+
+          // Fila 5: 0 y Resultado (=)
+          Row(
+            children: [
+              _construirBoton(texto: '0', alPresionar: () {}),
+              _construirBoton(
+                texto: '=',
+                colorFondo: Colors.green[700],
+                alPresionar: () {},
+              ),
+            ],
+          ),
+
+          // Pequeño margen inferior de seguridad
+          const SizedBox(height: 12),
         ],
       ), //SafeArea es un widget que se asegura de que el contenido no se superponga con el hardware de la pantalla, como el notch o la muesca de iPhone o la barra de navegación en Android. Center es un widget que centra su contenido en el centro de la pantalla. Text es un widget que muestra texto
     ); //Scaffold es el widget esqueleto que proporciona una estructura basica para la pantalla y se usa para el diseño visual de material design
