@@ -23,6 +23,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   //------------------------------------------------------------------------
   //haremos una función limpiar, como no es una función matematica no se coloca en calculadora_core.dart, sino aqui mismo en la clase
   //ya que aqui es donde tenemos acceso a las variables de estado que necesitamos para limpiar pantalla como _pantalla
+  //funciona basicamente como una funcion que reinicia la calculadora por eso los valores los regresamos a uini estado inicial por eso
+  //
   void _limpiar() {
     setState(() {
       _pantalla = '0';
