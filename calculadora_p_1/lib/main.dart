@@ -13,7 +13,7 @@ class MiCalculadoraApp extends StatelessWidget {
   Widget build(BuildContext) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: calculadora_screen(),
+      home: CalculadoraScreen(),
     );
   }
 }
