@@ -3,7 +3,7 @@ import 'package:flutter/material.dart'; //importa la libreria de flutter que con
 import '../logic/calculadora_core.dart'; //importa la logica de la calculadora
 
 class CalculadoraScreen extends StatefulWidget {
-  //esta clase es la clase
+  //esta clase es la clase CalculadoraScreen
   const CalculadoraScreen({super.key}); //es el constructor de la clase y le da el identifcador key de esta clase a statefulwidget
 
   @override //es una anotacion que le dice a flutter que va a reescribir metodos de la clase statefulwidget
@@ -26,11 +26,26 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   //
   void _limpiar() {
     setState(() {
+      //nosotros al poner setSate le decimos al framework que el estado interno del statefulwidget ha cambiado y que lo debe modificar (osea redibujar la pantalla) con
+      //lo que se coloque dentro del setstate, en este caso las variables de estado
       _pantalla = '0'; // regresa a 0 en la pantalla
       _primerNumero = null; //lo ponemos en nulo para que no tenga valor
       _operador = ''; //deja en blanco el operador
       _esperandoNuevoNumero =
           false; //indica si el siguiente toque limpia la patalla o no
+    });
+  }
+
+  //haremos otro método función para guardar los numeros y el operador que quiere
+  void _seleccionarOperacion(String op) {
+    setState(() {
+      // 1. Convertimos el texto de la pantalla al primer número
+      _primerNumero = double.tryParse(_pantalla); // double.tryParse es una función que convierte el texto  a tipo numerico decimal
+      //al poner tryParse le estamos diciendo que si no es un numero valido que devueva null a comparación de Parse que nos da error de excepción si no es valido
+      // 2. Guardamos el operador seleccionado
+      _operador = op;
+      // 3. Avisamos que el próximo dígito debe reemplazar la pantalla
+      _esperandoNuevoNumero = true; //cambia el valor del booleano si se presiona el siguiente numero despues del operador por lo que se reinicia la pantalla
     });
   }
 
@@ -81,11 +96,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               ),
 
               _construirBoton(
-                texto: '+',
+                texto: '÷',
                 colorFondo: Colors.orange[800],
-                alPresionar: () {
-                  //Aquí llamaremos a la función de operación
-                },
+                alPresionar: () => _seleccionarOperacion('÷'),
               ),
             ],
           ), //termina la primer fila
