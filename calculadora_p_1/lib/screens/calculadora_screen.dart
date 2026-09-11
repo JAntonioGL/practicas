@@ -77,13 +77,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     double segundoNumero =
         double.tryParse(_pantalla) ??
         0.0; //obtiene el valor actual en la pantalla
-    double total = 0.0;
+    double total = 0.0; // es una variable local que nos permite guardar el resultado y mostrarlo
 
     //2. Evaluamos qué operador se guardó y llamamos a tus funciones importadas
     switch (_operador) {
       case '+':
         total = suma(_primerNumero!, segundoNumero); //El signo de exclamación (!) le indica a Dart que estamos seguros de que la variable
-        // no es nula en ese punto gracias a la validación previa.
+        // no es nula en ese punto, gracias a la validación previa.
         break;
       case '-':
         total = resta(_primerNumero!, segundoNumero);
@@ -95,7 +95,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         //manejo básico de division entre 0
         if (segundoNumero == 0) {
           setState(() {
-            _pantalla = 'Error';
+            _pantalla = 'Error, no puedes dividir entre 0';
             _primerNumero = null;
             _operador = '';
             _esperandoNuevoNumero = true;
@@ -111,12 +111,18 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     // 3. Actualizamos la pantalla con el resultado final
     setState(() {
       // Si el decimal termina en .0 (ej. 8.0), lo mostramos como entero '8'
-      _pantalla = (total % 1 == 0)
-          ? total.toInt().toString()
-          : total.toString();
+      _pantalla =
+          (total % 1 == 0) //es un operador terniario, es como un pequeño if, si total % 1 es igual a 0, entonces se muestra el resultado como entero, si no, se muestra como decimal
+          ? total
+                .toInt()
+                .toString() // el valor que tiene total lo convierte a entero y luego a texto si es que no tiene residuo
+          : total.toString(); // si tiene residuo lo muestra tal cual como decimal y luego a texto
       _primerNumero = null; // Reiniciamos para la siguiente cuenta
       _operador = '';
-      _esperandoNuevoNumero = true;
+      _esperandoNuevoNumero = true; // con esto indicamos que que no va a concatenar, es la bandera que nos dice si vamos a ecsribir nuevonumero o no
+      //por eso está en true para que cuando se presione otro numero se reemplace en la función de _presionarNumero o si se presiona operador la variable se mantiene true para el siguiente numerom
+      /*Prepara la pantalla para la siguiente interacción. Si el resultado fue 132 y el usuario presiona 5, la pantalla no escribirá 1325, 
+      sino que comenzará una nueva cuenta con 5. Pero si en cambio presiona +, tomará ese 132 como el nuevo _primerNumero.*/
     });
   }
 
@@ -128,7 +134,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       // se usa scaffold o andamio como estructura base del widget porque estamos usando material design
       backgroundColor: Colors.black, //las palabras que ponemos antes de : son parametros nombrados, es decir, le decimos a flutter que es lo que queremos que haga con el widget
       appBar: AppBar(
-        title: const Text('Calculadora Curi'),
+        title: Text(
+          'Calculadora Curi',
+          style: TextStyle(color: Colors.orangeAccent),
+        ),
         backgroundColor: Colors.grey[900],
       ), //podemos verlo como cajas dentro de cajas, los argumentos del widget son como las propiedades que le damos al widget, y los widgets anidados son como los elementos que ponemos dentro del widget
       body: Column(
@@ -178,29 +187,42 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             children: [
               _construirBoton(
                 texto: '7',
-                alPresionar: () {
-                  // Aquí agregaremos el '7' a la pantalla
-                },
+                alPresionar: () => _presionarNumero('7'),
               ),
-              _construirBoton(texto: '8', alPresionar: () {}),
-              _construirBoton(texto: '9', alPresionar: () {}),
+              _construirBoton(
+                texto: '8',
+                alPresionar: () => _presionarNumero('8'),
+              ),
+              _construirBoton(
+                texto: '9',
+                alPresionar: () => _presionarNumero('9'),
+              ),
               _construirBoton(
                 texto: '×',
                 colorFondo: Colors.orange[800],
-                alPresionar: () {},
+                alPresionar: () => _seleccionarOperacion('*'),
               ),
             ],
           ), //Termina la segunda fila
           // Fila 3: 4, 5, 6 y Resta------------------------------------
           Row(
             children: [
-              _construirBoton(texto: '4', alPresionar: () {}),
-              _construirBoton(texto: '5', alPresionar: () {}),
-              _construirBoton(texto: '6', alPresionar: () {}),
+              _construirBoton(
+                texto: '4',
+                alPresionar: () => _presionarNumero('4'),
+              ),
+              _construirBoton(
+                texto: '5',
+                alPresionar: () => _presionarNumero('5'),
+              ),
+              _construirBoton(
+                texto: '6',
+                alPresionar: () => _presionarNumero('6'),
+              ),
               _construirBoton(
                 texto: '-',
                 colorFondo: Colors.orange[800],
-                alPresionar: () {},
+                alPresionar: () => _seleccionarOperacion('-'),
               ),
             ],
           ),
@@ -208,13 +230,22 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           // Fila 4: 1, 2, 3 y Suma
           Row(
             children: [
-              _construirBoton(texto: '1', alPresionar: () {}),
-              _construirBoton(texto: '2', alPresionar: () {}),
-              _construirBoton(texto: '3', alPresionar: () {}),
+              _construirBoton(
+                texto: '1',
+                alPresionar: () => _presionarNumero('1'),
+              ),
+              _construirBoton(
+                texto: '2',
+                alPresionar: () => _presionarNumero('2'),
+              ),
+              _construirBoton(
+                texto: '3',
+                alPresionar: () => _presionarNumero('3'),
+              ),
               _construirBoton(
                 texto: '+',
                 colorFondo: Colors.orange[800],
-                alPresionar: () {},
+                alPresionar: () => _seleccionarOperacion('+'),
               ),
             ],
           ),
@@ -222,11 +253,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           // Fila 5: 0 y Resultado (=)
           Row(
             children: [
-              _construirBoton(texto: '0', alPresionar: () {}),
+              _construirBoton(
+                texto: '0',
+                alPresionar: () => _presionarNumero('0'),
+              ),
               _construirBoton(
                 texto: '=',
                 colorFondo: Colors.green[700],
-                alPresionar: () {},
+                alPresionar: () => _CalcularResultado(),
               ),
             ],
           ),
