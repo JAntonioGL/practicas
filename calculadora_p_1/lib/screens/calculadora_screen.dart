@@ -36,7 +36,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     });
   }
 
-  //haremos otro método función para guardar los numeros y el operador que quiere
+  //haremos otro método función para guardar  el operador que quiere y que se limpie la pantalla para introducir el siguiente numero
   void _seleccionarOperacion(String op) {
     setState(() {
       // 1. Convertimos el texto de la pantalla al primer número
@@ -46,6 +46,77 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       _operador = op;
       // 3. Avisamos que el próximo dígito debe reemplazar la pantalla
       _esperandoNuevoNumero = true; //cambia el valor del booleano si se presiona el siguiente numero despues del operador por lo que se reinicia la pantalla
+      //nos ayuda a saber si ya se presiono el operador para saber si ya viene el segundo numero
+    });
+  }
+
+  //esta función nos va  ayudar a capturar los digitos que precionamos, sean del 1 al 9
+  void _presionarNumero(String digito) {
+    setState(() {
+      // Si la pantalla tiene '0' o acabamos de tocar un operador, reemplazamos el texto
+      if (_pantalla == '0' || _esperandoNuevoNumero) {
+        //cuando presionamos el boton de operador se llama a la función de _seleccionarOperador y
+        //ahi se va a cambiar el estado de la variable _esperandoNuevoNumero a true para que al presionar un numero se reemplace el texto en lugar de concatenar
+        //asi funciona en una calculadora real, primero precionas un numero, luego el operador y luego otro numero para realizar la operacion
+        //es decir, si _pantalla es '0' y precionamos '5', se reemplaza el cero por el cinco, si _pantalla es '5' y precionamos '+', se guarda el cinco y se reinicia la pantalla a '0'
+        //si despues de precionar '+' precionamos '3', se reemplaza el cero por el tres y se guarda el tres, si precionamos '=', se realiza la operacion '5 + 3' y se muestra el resultado '8'
+        _pantalla = digito; //se reemplaza el cero por el digito precionado, si la varible esperandoNuevoNumero es true se reemplaza el texto
+        _esperandoNuevoNumero = false; //y como ya se preciono el primer numero de esta operacion, se cambia el valor del booleano a false
+      } else {
+        // Si ya hay números escritos, concatenamos el nuevo dígito al final
+        _pantalla = _pantalla + digito; //si no es cero y no se ha precionado un operador, se concatena el digito al texto que ya se tiene en pantalla
+      }
+    });
+  }
+
+  //en este método se hace el calculo llamando a las funciones de logic en calculadora_core.dart
+  void _CalcularResultado() {
+    if (_primerNumero == null || _operador.isEmpty) return; //si no hay primer numero o no hay operador, no se hace nada, validamos que
+    //haya algo para que no de error al hacer las operaciones desde calculadora_core.dart
+
+    double segundoNumero =
+        double.tryParse(_pantalla) ??
+        0.0; //obtiene el valor actual en la pantalla
+    double total = 0.0;
+
+    //2. Evaluamos qué operador se guardó y llamamos a tus funciones importadas
+    switch (_operador) {
+      case '+':
+        total = suma(_primerNumero!, segundoNumero); //El signo de exclamación (!) le indica a Dart que estamos seguros de que la variable
+        // no es nula en ese punto gracias a la validación previa.
+        break;
+      case '-':
+        total = resta(_primerNumero!, segundoNumero);
+        break;
+      case '*':
+        total = multiplicacion(_primerNumero!, segundoNumero);
+        break;
+      case '÷':
+        //manejo básico de division entre 0
+        if (segundoNumero == 0) {
+          setState(() {
+            _pantalla = 'Error';
+            _primerNumero = null;
+            _operador = '';
+            _esperandoNuevoNumero = true;
+          });
+          return;
+        }
+        total = division(_primerNumero!, segundoNumero);
+        break;
+      default:
+        break;
+    }
+
+    // 3. Actualizamos la pantalla con el resultado final
+    setState(() {
+      // Si el decimal termina en .0 (ej. 8.0), lo mostramos como entero '8'
+      _pantalla = (total % 1 == 0)
+          ? total.toInt().toString()
+          : total.toString();
+      _primerNumero = null; // Reiniciamos para la siguiente cuenta
+      _operador = '';
+      _esperandoNuevoNumero = true;
     });
   }
 
