@@ -4,6 +4,11 @@ const ERROR_CATALOG = {
     message: "The email has been registered yet.",
     errorCode: "USER_ALREADY_EXISTS_EMAIL",
   },
+  USER_NOT_EXISTS_EMAIL: {
+    statusCode: 406,
+    message: "The email has not been registered yet.",
+    errorCode: "USER_NOT_EXISTS_EMAIL",
+  },
   USER_NOT_MATCH: {
     statusCode: 401,
     message: "Credentials don't match with any user",
@@ -35,6 +40,21 @@ const ERROR_CATALOG = {
     details: {
       field: "password"
     }
+  },
+  VALIDATE_REGISTER: {
+    statusCode: 400,
+    message: "Error data.",
+    errorCode: "VALIDATE_REGISTER",
+  },
+  VALIDATE_EMAIL: {
+    statusCode: 400,
+    message: "Error data.",
+    errorCode: "VALIDATE_EMAIL",
+  },
+  VALIDATE_LOGIN: {
+    statusCode: 400,
+    message: "Error data.",
+    errorCode: "VALIDATE_LOGIN",
   }
 };
 

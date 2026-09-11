@@ -26,6 +26,7 @@ async function registerUser(req, res, next) {
   console.log("entraron a registrar") //log para bitacora
   const { name, email, password } = req.body; //de request tomamos los datos enviados
   try {
+
     await userValidationsErrors.checkDataRegister(req.body)
     //verificamos que esten los 3 datos requeridos
 
@@ -39,7 +40,7 @@ async function registerUser(req, res, next) {
       correo: email,
       password_hash: hash,
       google_uid: "demo_" + Math.floor(Math.random() * (1000 - 0) + 0),
-      fmc_token: "fmc_token_demo_"
+      fmc_token: "fmc_token_demo_" + Math.floor(Math.random() * (1000 - 0) + 0)
 
     }; //armamos el objeto con los datos para el nuevo usuario
 
@@ -49,6 +50,11 @@ async function registerUser(req, res, next) {
   catch (err) {
     next(err);
   }
+}
+
+async function loginUser(req, res, next) {
+  const { email, password } = req.body;
+
 }
 
 //exportación de funciones

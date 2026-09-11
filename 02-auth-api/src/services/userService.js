@@ -21,7 +21,7 @@ const findUserByEmailDb = async (email) => {
 
 const pushUserDB = async (userNew) => {
   console.log("entraron a insertar usuario")
-  const { nombre, correo, password_hash, google_uid, fcm_token} = userNew;
+  const { nombre, correo, password_hash, google_uid, fcm_token } = userNew;
   const { rows } = await pool.query(
     'INSERT INTO usuarios (nombre, correo, password_hash, google_uid, fcm_token) VALUES ($1, $2, $3, $4, $5) RETURNING *',
     [nombre, correo, password_hash, google_uid, fcm_token]

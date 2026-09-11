@@ -16,6 +16,7 @@ services:
       - ./services:/home/app/services
       - ./.env:/home/app/.env
       - ./validators:/home/app/validators
+  
     networks:
       - experimento_network #una red interna de docker para experimentos
 
