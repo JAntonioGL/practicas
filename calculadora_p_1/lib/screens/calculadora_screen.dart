@@ -129,7 +129,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   @override
   Widget build(BuildContext context) {
     //aqui defines ques e dibuja en la pantalla
-
     return Scaffold(
       // se usa scaffold o andamio como estructura base del widget porque estamos usando material design
       backgroundColor: Colors.black, //las palabras que ponemos antes de : son parametros nombrados, es decir, le decimos a flutter que es lo que queremos que haga con el widget
