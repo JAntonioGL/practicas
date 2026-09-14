@@ -59,10 +59,15 @@ const ERROR_CATALOG = {
     message: "Error data.",
     errorCode: "VALIDATE_LOGIN",
   },
-  PERMISSION_DENIED:{
+  PERMISSION_DENIED: {
     statusCode: 403,
     message: "Unauthorized.",
     errorCode: "PERMISSION_DENIED",
+  },
+  DATA_BASE_ERROR: {
+    statusCode: 500,
+    message: "Database error",
+    errorCode: "DATA_BASE_ERROR",
   }
 };
 

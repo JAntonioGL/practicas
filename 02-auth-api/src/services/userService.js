@@ -1,10 +1,14 @@
 const pool = require('../../config/db.js');
 
+
+//servicio para obtener todos los usuarios de la db
 const getUsersDb = async () => {
   const { rows } = await pool.query(`SELECT * FROM usuarios ORDER BY id`);
   return rows;
 }
-// Agregamos el parámetro 'email' que queremos buscar
+
+
+// servicio para buscar un usuario por email
 const findUserByEmailDb = async (email) => {
   console.log("entraron a buscar en la db por email")
   // Usamos $1 como un "placeholder" de seguridad. 
@@ -19,6 +23,7 @@ const findUserByEmailDb = async (email) => {
   return rows[0];
 }
 
+//servicio para insertar un usuario en la DB
 const pushUserDB = async (userNew) => {
   console.log("entraron a insertar usuario")
   const { nombre, correo, password_hash, google_uid, fcm_token } = userNew;
@@ -29,9 +34,19 @@ const pushUserDB = async (userNew) => {
   return rows[0];
 }
 
+//servicio para marcar un login en la DB
+const makeLoginDB = async (id) => {
+  const fecha = new Date();
+  const { rows } = await pool.query(
+    'UPDATE usuarios SET ultimo_login_en = $2 WHERE id = $1 RETURNING *', [id, fecha]
+  );
+  return rows[0];
+}
 
+//exportamos todo
 module.exports = {
   getUsersDb,
   findUserByEmailDb,
-  pushUserDB
+  pushUserDB,
+  makeLoginDB
 }

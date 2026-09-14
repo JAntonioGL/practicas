@@ -1,3 +1,5 @@
+//archivo para definir los parametros de las variables y no tener tanto codigo repetido
+
 const Joi = require('joi');
 
 

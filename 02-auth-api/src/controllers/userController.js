@@ -1,6 +1,12 @@
 const userServices = require('../services/userService.js'); //importación de las funciones para leer y escribir el json
 const bcrypt = require('bcryptjs');//importación del modulo bycript para usar encrpitación
 const userValidationsErrors = require('../validators/userValidator.js')
+const ERROR_CATALOG = require('../utils/errorCatalog.js'); //importación de la biblioteca de errores
+const jwtGenerateToken = require('../utils/jwtUtils.js');
+const AppError = require('../utils/AppError.js');
+const generateAccessToken = require('../utils/jwtUtils.js');
+
+
 //función para obtener los usuarios 
 async function getAllUsersDB(req, res) {
   try {
@@ -13,10 +19,7 @@ async function getAllUsersDB(req, res) {
   }
   catch (err) {
     //manejo de errores para la respuesta y log
-    res.status(500).json({
-      error: "Internal error, can't procces it."
-    })
-    console.error(`can't proccess it`, err.message);
+    next(err);
   }
 }
 
@@ -27,8 +30,9 @@ async function registerUser(req, res, next) {
   const { name, email, password } = req.body; //de request tomamos los datos enviados
   try {
 
-    await userValidationsErrors.checkDataRegister(req.body)
     //verificamos que esten los 3 datos requeridos
+    await userValidationsErrors.checkDataRegister(req.body)
+
 
     await userValidationsErrors.checkEmailNotTaken(email);
 
@@ -53,9 +57,27 @@ async function registerUser(req, res, next) {
 }
 
 async function loginUser(req, res, next) {
-  const { email, password } = req.body;
+
+  try {
+    // 1. El validador revisa que traiga todo, valida JOI y busca en BD.
+    // Como el validador es async, le ponemos 'await'. Cuando termine, nos regresa el usuario.
+    const user = await userValidationsErrors.checkDataLogin(req.body);
+    // 2. Comparamos contraseñas
+    await userValidationsErrors.checkPassword(req.body.password, user.password_hash);
+
+    //3. Marcamos el login en la DB
+    await userServices.makeLoginDB(user.id);
+
+
+    res.status(200).json({ status: "success", token: generateAccessToken(user) }); //mensaje de confirmación de la petición
+
+  }
+  catch (err) {
+    next(err);
+  }
+
 
 }
 
 //exportación de funciones
-module.exports = { getAllUsersDB, registerUser }
+module.exports = { getAllUsersDB, registerUser, loginUser }
