@@ -70,7 +70,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
   //en este método se hace el calculo llamando a las funciones de logic en calculadora_core.dart
-  void _CalcularResultado() {
+  void _calcularResultado() {
     if (_primerNumero == null || _operador.isEmpty) return; //si no hay primer numero o no hay operador, no se hace nada, validamos que
     //haya algo para que no de error al hacer las operaciones desde calculadora_core.dart
 
@@ -259,7 +259,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               _construirBoton(
                 texto: '=',
                 colorFondo: Colors.green[700],
-                alPresionar: () => _CalcularResultado(),
+                alPresionar: () => _calcularResultado(),
               ),
             ],
           ),
