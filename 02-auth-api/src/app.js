@@ -1,7 +1,8 @@
 const express = require('express'); //importamos express
 const userRoutesJSON = require('./routes/userRoutesJSON.js') //importamos las rutas de usuariosJSON
 const userRoutes = require('./routes/userRoutes.js') //importamos las rutas de usuariosJSON
-const errorHandler = require('./middlewares/errorHandler.js');
+const errorHandler = require('./middlewares/errorHandler.js');//middleware que captura errores
+
 
 const app = express(); //definimos la app express
 
@@ -10,5 +11,5 @@ app.use('/api/JSON/users', userRoutesJSON);//Definimos las rutas para usarlas co
 app.use('/api/users', userRoutes);//Definimos las rutas para usuarios
 
 
-app.use(errorHandler); 
+app.use(errorHandler);
 module.exports = app; //exportamos la app

@@ -1,17 +1,20 @@
 const ERROR_CATALOG = {
   USER_ALREADY_EXISTS_EMAIL: {
-    statusCode: 406,
+    statusCode: 409,
     message: "The email has been registered yet.",
     errorCode: "USER_ALREADY_EXISTS_EMAIL",
   },
-  USER_NOT_EXISTS_EMAIL: {
+  USER_NOT_FIND: {
     statusCode: 406,
-    message: "The email has not been registered yet.",
-    errorCode: "USER_NOT_EXISTS_EMAIL",
+    message: "Invalid email or password.",
+    errorCode: "USER_NOT_FIND",
+    details: {
+      field: "password or email wrong"
+    }
   },
   USER_NOT_MATCH: {
-    statusCode: 401,
-    message: "Credentials don't match with any user",
+    statusCode: 406,
+    message: "Invalid email or password.",
     errorCode: "USER_NOT_MATCH",
     details: {
       field: "password or email wrong"
@@ -55,6 +58,11 @@ const ERROR_CATALOG = {
     statusCode: 400,
     message: "Error data.",
     errorCode: "VALIDATE_LOGIN",
+  },
+  PERMISSION_DENIED:{
+    statusCode: 403,
+    message: "Unauthorized.",
+    errorCode: "PERMISSION_DENIED",
   }
 };
 
