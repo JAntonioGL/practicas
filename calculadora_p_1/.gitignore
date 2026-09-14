@@ -51,6 +51,4 @@ app.*.map.json
 windows/flutter/ephemeral/
 windows/flutter/generated_plugin_registrant.cc
 
-# Android specific
-**/android/local.properties
-linux/flutter/ephemeral/
+
