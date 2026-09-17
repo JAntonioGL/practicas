@@ -1,0 +1,23 @@
+[
+  {
+    "id_usuario": "1",
+    "nombre": "Juan Perez",
+    "correo": "juan@example.com",
+    "fmc_token": "token_fcm_12345",
+    "password_hash": "$2a$10$X1j...fakehash1..."
+  },
+  {
+    "id_usuario": "2",
+    "nombre": "Maria Garcia",
+    "correo": "maria@example.com",
+    "fmc_token": "token_fcm_67890",
+    "password_hash": "$2a$10$Y2k...fakehash2..."
+  },
+  {
+    "id_usuario": 3,
+    "nombre": "Prueba Antigravity5",
+    "correo": "prueba5@yoverifico.com",
+    "fmc_token": "fmc_token_demo_3",
+    "password_hash": "$2b$10$q1pQ8LtrTnu9PtQM.sn9weKkbguJej/SDWjeLC6G0FuK7Za7.USda"
+  }
+]
