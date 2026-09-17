@@ -18,6 +18,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   String _operador =
       ''; // guarda  el operador aritmetico que quiere usar '+', '-', '*', '/'
   bool _esperandoNuevoNumero = false; // Indica si el siguiente toque limpia la patalla o no es como una bandera
+  String _historial = ''; // con esta variable de estado vamos a poder mostrar la operación que está realizando el usuario
+  //la guardamos con texto secundario
 
   //------------------------------------------------------------------------
   //haremos una función limpiar, como no es una función matematica no se coloca en calculadora_core.dart, sino aqui mismo en la clase
@@ -33,6 +35,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       _operador = ''; //deja en blanco el operador
       _esperandoNuevoNumero =
           false; //indica si el siguiente toque limpia la patalla o no
+      _historial = ''; //deja en blanco el historial
     });
   }
 
@@ -44,6 +47,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       //al poner tryParse le estamos diciendo que si no es un numero valido que devueva null a comparación de Parse que nos da error de excepción si no es valido
       // 2. Guardamos el operador seleccionado
       _operador = op;
+
+      _historial = '$_pantalla $op'; // se agrega esta nueva variable de estado cuando se seleccione un operador para que
+      // guarde el primer numero y el operador y asi suscesivamente
       // 3. Avisamos que el próximo dígito debe reemplazar la pantalla
       _esperandoNuevoNumero = true; //cambia el valor del booleano si se presiona el siguiente numero despues del operador por lo que se reinicia la pantalla
       //nos ayuda a saber si ya se presiono el operador para saber si ya viene el segundo numero
@@ -110,6 +116,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
     // 3. Actualizamos la pantalla con el resultado final
     setState(() {
+      _historial = '$_historial$_pantalla ='; //con el carecter $ podemos insertar variables dentro de un string (interpolacion de cadenas)
       // Si el decimal termina en .0 (ej. 8.0), lo mostramos como entero '8'
       _pantalla =
           (total % 1 == 0) //es un operador terniario, es como un pequeño if, si total % 1 es igual a 0, entonces se muestra el resultado como entero, si no, se muestra como decimal
@@ -150,17 +157,34 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               //container es un widget multiproposito que se usa para agrupar otros widgets y darle propiedades como color, tamaño, etc
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.all(24.0),
-              child: Text(
-                _pantalla,
-                style: const TextStyle(
-                  fontSize: 48,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
+              child: Column(
+                mainAxisAlignment:
+                    MainAxisAlignment.end, //empujamos los textos hacia abajo
+                crossAxisAlignment: CrossAxisAlignment
+                    .end, //con esto alineamos los textos a la derecha
+                children: [
+                  Text(
+                    _historial,
+                    style: const TextStyle(fontSize: 24, color: Colors.grey),
+                    maxLines: 1, // es una propiedad que sirve para limitar el número máximo de líneas que puede ocupar un widget de texto
+                  ),
+
+                  const SizedBox(height: 8), //es una pequeña caja vacia que se usa para separar los textos
+
+                  Text(
+                    _pantalla,
+                    style: const TextStyle(
+                      fontSize: 48,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1, // es una propiedad que sirve para limitar el número máximo de líneas que puede ocupar un widget de texto
+                  ),
+                ],
               ),
             ),
           ),
+          //es un separador visual, como una pequeña linea horizontal que sirve para separar los textos de la parte superior de los botones
           const Divider(color: Colors.blueGrey, height: 1),
 
           //Aqui colocaremos las filas o rows de botones que conforman el teclado de la calculadora-------------------------------------------
