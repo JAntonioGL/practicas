@@ -1,4 +1,4 @@
-require('dotenv').config(); //importamos directo modulo para .env
+import 'dotenv/config';//importamos directo modulo para .env
 const app = require('./src/app.js'); //importamos la app
 const PORT = process.env.PORT || 3000; //definimos el puerto desde el .env o default 3000
 const pool = require('./config/db.js')

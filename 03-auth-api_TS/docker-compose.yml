@@ -2,7 +2,7 @@ services:
   #nombre del servicio
   api_node24_experimentojs:
     build: . #construye basado en dockerfile
-    container_name: api_node24_experimetojs #nombre del contenedor
+    container_name: api_node24_TS_experimetojs #nombre del contenedor
     ports:
       - "3000:3000" #de mi puerto 3000 al 3000 del contenedor
     volumes:
@@ -16,7 +16,7 @@ services:
       - ./services:/home/app/services
       - ./.env:/home/app/.env
       - ./validators:/home/app/validators
-  
+
     networks:
       - experimento_network #una red interna de docker para experimentos
 
