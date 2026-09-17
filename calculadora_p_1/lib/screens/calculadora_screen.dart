@@ -42,17 +42,59 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   //haremos otro método función para guardar  el operador que quiere y que se limpie la pantalla para introducir el siguiente numero
   void _seleccionarOperacion(String op) {
     setState(() {
-      // 1. Convertimos el texto de la pantalla al primer número
-      _primerNumero = double.tryParse(_pantalla); // double.tryParse es una función que convierte el texto  a tipo numerico decimal
+      //en un futuro podemos usar esta variable numeroActual para hacer
+      //  Convertimos el texto de la pantalla al primer número
+      double numeroActual = double.tryParse(_pantalla) ?? 0.0; // double.tryParse es una función que convierte el texto  a tipo numerico decimal
       //al poner tryParse le estamos diciendo que si no es un numero valido que devueva null a comparación de Parse que nos da error de excepción si no es valido
-      // 2. Guardamos el operador seleccionado
-      _operador = op;
+      //el operador ?? es para decir: "si el resultado de la izquierda es nulo, usa el valor de la derecha"
+      // CASO A: Ya había una cuenta previa esperando resolverse (ej. ya teníamos 1 y '+', y ahora pulsaron '+')
+      if (_primerNumero != null &&
+          _operador.isNotEmpty &&
+          !_esperandoNuevoNumero) {
+        double subtotal = _ejecutarOperacionMatematica(
+          _primerNumero!,
+          numeroActual,
+          _operador,
+        );
+        if (subtotal.isNaN) {
+          _pantalla = 'Error';
+          _historial = '';
+          _primerNumero = null;
+          _operador = '';
+          _esperandoNuevoNumero = true;
+          return;
+        }
 
-      _historial = '$_pantalla $op'; // se agrega esta nueva variable de estado cuando se seleccione un operador para que
-      // guarde el primer numero y el operador y asi suscesivamente
-      // 3. Avisamos que el próximo dígito debe reemplazar la pantalla
-      _esperandoNuevoNumero = true; //cambia el valor del booleano si se presiona el siguiente numero despues del operador por lo que se reinicia la pantalla
-      //nos ayuda a saber si ya se presiono el operador para saber si ya viene el segundo numero
+        // Actualizamos el primer número con el acumulado
+        _primerNumero = subtotal;
+
+        // Actualizamos la pantalla con el subtotal formateado
+        _pantalla = (subtotal % 1 == 0)
+            ? subtotal.toInt().toString()
+            : subtotal.toString(); //es un operador terniario y el simbolo ?
+        //nos dice que actua como un if else Condición ? Acción_si_es_verdadero : Acción_si_es_falso;
+        //si es cierto lo convierte a entero y le quita los decimales .00 y si es falso se deja tal cual solo lo pasa a string para mostrarlo
+
+        // Extendemos el historial acumulando: "1 + 2 +"
+        _historial = '$_historial $numeroActual $op'; // encadenamos y mostramos las variables con el signo $ y asi nos permite colocar varaibles
+      }
+      // CASO B: Es el primer operador que se presiona en la cuenta
+      else if (_primerNumero == null) {
+        _primerNumero = numeroActual;
+        _historial = '$_pantalla $op';
+      }
+      // CASO C: El usuario se equivocó de operador y lo cambió antes de escribir otro número (ej. pulsó '+' y luego '-')
+      else {
+        _historial =
+            '${_primerNumero! % 1 == 0 ? _primerNumero!.toInt() : _primerNumero} $op'; //es un operador terniario y el simbolo ?
+        //nos dice que actua como un if else Condición ? Acción_si_es_verdadero : Acción_si_es_falso;
+        //${ ... }: Permite evaluar una expresión completa dentro del string.
+        //_primerNumero! % 1 == 0 ? _primerNumero!.toInt() : _primerNumero: Revisa si el número guardado no tiene decimales para imprimirlo sin .0 (ej. 5 en vez de 5.0).
+        //$op: Reemplaza el operador viejo por el nuevo en el texto visible del historial (cambia "5 +" por "5 -").
+      }
+
+      _operador = op;
+      _esperandoNuevoNumero = true;
     });
   }
 
@@ -83,54 +125,48 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     double segundoNumero =
         double.tryParse(_pantalla) ??
         0.0; //obtiene el valor actual en la pantalla
-    double total = 0.0; // es una variable local que nos permite guardar el resultado y mostrarlo
-
-    //2. Evaluamos qué operador se guardó y llamamos a tus funciones importadas
-    switch (_operador) {
-      case '+':
-        total = suma(_primerNumero!, segundoNumero); //El signo de exclamación (!) le indica a Dart que estamos seguros de que la variable
-        // no es nula en ese punto, gracias a la validación previa.
-        break;
-      case '-':
-        total = resta(_primerNumero!, segundoNumero);
-        break;
-      case '*':
-        total = multiplicacion(_primerNumero!, segundoNumero);
-        break;
-      case '÷':
-        //manejo básico de division entre 0
-        if (segundoNumero == 0) {
-          setState(() {
-            _pantalla = 'Error, no puedes dividir entre 0';
-            _primerNumero = null;
-            _operador = '';
-            _esperandoNuevoNumero = true;
-          });
-          return;
-        }
-        total = division(_primerNumero!, segundoNumero);
-        break;
-      default:
-        break;
-    }
+    double resultado = _ejecutarOperacionMatematica(
+      _primerNumero!,
+      segundoNumero,
+      _operador,
+    );
 
     // 3. Actualizamos la pantalla con el resultado final
     setState(() {
-      _historial = '$_historial$_pantalla ='; //con el carecter $ podemos insertar variables dentro de un string (interpolacion de cadenas)
-      // Si el decimal termina en .0 (ej. 8.0), lo mostramos como entero '8'
-      _pantalla =
-          (total % 1 == 0) //es un operador terniario, es como un pequeño if, si total % 1 es igual a 0, entonces se muestra el resultado como entero, si no, se muestra como decimal
-          ? total
-                .toInt()
-                .toString() // el valor que tiene total lo convierte a entero y luego a texto si es que no tiene residuo
-          : total.toString(); // si tiene residuo lo muestra tal cual como decimal y luego a texto
-      _primerNumero = null; // Reiniciamos para la siguiente cuenta
+      if (resultado.isNaN) {
+        // si en resultado nos arroja un indefinido o invalido con isNaN lo detectamos
+        _pantalla = 'Error';
+        _historial = '';
+      } else {
+        _historial = '$_historial $segundoNumero ='; //concatenamos el resultado actual con el segundo numero y el historial que llevemos de operaciones encadenadas
+        _pantalla = (resultado % 1 == 0)
+            ? resultado.toInt().toString()
+            : resultado.toString(); // es un operador terniario que nos ayuda a mostrar el resultado sin decimales si es que no tiene
+      }
+
+      // Reiniciamos para que el siguiente número empiece cuenta nueva
+      _primerNumero = null;
       _operador = '';
-      _esperandoNuevoNumero = true; // con esto indicamos que que no va a concatenar, es la bandera que nos dice si vamos a ecsribir nuevonumero o no
-      //por eso está en true para que cuando se presione otro numero se reemplace en la función de _presionarNumero o si se presiona operador la variable se mantiene true para el siguiente numerom
-      /*Prepara la pantalla para la siguiente interacción. Si el resultado fue 132 y el usuario presiona 5, la pantalla no escribirá 1325, 
-      sino que comenzará una nueva cuenta con 5. Pero si en cambio presiona +, tomará ese 132 como el nuevo _primerNumero.*/
+      _esperandoNuevoNumero = true;
     });
+  }
+
+  // para refactorizar el codigo para que haga operaciones encadenadas y no solo operaciones de 2 numeros necesitamos una funcion auxiliar
+  // que simplemente aplique las funciones de calculaora_core.dart
+  double _ejecutarOperacionMatematica(double a, double b, String op) {
+    switch (op) {
+      case '+':
+        return suma(a, b);
+      case '-':
+        return resta(a, b);
+      case '*':
+        return multiplicacion(a, b);
+      case '÷':
+        if (b == 0) return double.nan;
+        return division(a, b);
+      default:
+        return b;
+    }
   }
 
   @override
