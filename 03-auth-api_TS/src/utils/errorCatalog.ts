@@ -1,4 +1,4 @@
-const ERROR_CATALOG = {
+export const ERROR_CATALOG = {
   USER_ALREADY_EXISTS_EMAIL: {
     statusCode: 409,
     message: "The email has been registered yet.",
@@ -70,5 +70,3 @@ const ERROR_CATALOG = {
     errorCode: "DATA_BASE_ERROR",
   }
 };
-
-module.exports = ERROR_CATALOG;

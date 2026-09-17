@@ -1,19 +1,18 @@
-const pool = require('../../config/db.js');
-
+import pool from '../../config/db.js';
+import type { IUsuarioDB, IPushUsuarioDB } from '../types/user/userInterface.js';
 
 //servicio para obtener todos los usuarios de la db
-const getUsersDb = async () => {
-  const { rows } = await pool.query(`SELECT * FROM usuarios ORDER BY id`);
+export const getUsersDb = async (): Promise<IUsuarioDB[]> => {
+  const { rows } = await pool.query<IUsuarioDB>(`SELECT * FROM usuarios ORDER BY id`);
   return rows;
 }
 
-
 // servicio para buscar un usuario por email
-const findUserByEmailDb = async (email) => {
+export const findUserByEmailDb = async (email: string): Promise<IUsuarioDB | undefined> => {
   console.log("entraron a buscar en la db por email")
   // Usamos $1 como un "placeholder" de seguridad. 
   // pg se encarga de limpiarlo para que no nos hackeen.
-  const { rows } = await pool.query(
+  const { rows } = await pool.query<IUsuarioDB>(
     'SELECT * FROM usuarios WHERE correo = $1 LIMIT 1',
     [email] // El valor de email reemplazará al $1
   );
@@ -24,29 +23,23 @@ const findUserByEmailDb = async (email) => {
 }
 
 //servicio para insertar un usuario en la DB
-const pushUserDB = async (userNew) => {
+export const pushUserDB = async (userNew: IPushUsuarioDB): Promise<IUsuarioDB> => {
   console.log("entraron a insertar usuario")
   const { nombre, correo, password_hash, google_uid, fcm_token } = userNew;
-  const { rows } = await pool.query(
+  const { rows } = await pool.query<IUsuarioDB>(
     'INSERT INTO usuarios (nombre, correo, password_hash, google_uid, fcm_token) VALUES ($1, $2, $3, $4, $5) RETURNING *',
     [nombre, correo, password_hash, google_uid, fcm_token]
   );
-  return rows[0];
+  return rows[0]!;
 }
 
 //servicio para marcar un login en la DB
-const makeLoginDB = async (id) => {
-  const fecha = new Date();
-  const { rows } = await pool.query(
-    'UPDATE usuarios SET ultimo_login_en = $2 WHERE id = $1 RETURNING *', [id, fecha]
-  );
-  return rows[0];
-}
+export const makeLoginDB = async (id: number): Promise<IUsuarioDB> => {
 
-//exportamos todo
-module.exports = {
-  getUsersDb,
-  findUserByEmailDb,
-  pushUserDB,
-  makeLoginDB
+  const fecha: Date = new Date();
+  const payload: [number, Date] = [id, fecha];
+  const { rows } = await pool.query<IUsuarioDB>(
+    'UPDATE usuarios SET ultimo_login_en = $2 WHERE id = $1 RETURNING *', payload
+  );
+  return rows[0]!;
 }

@@ -1,7 +1,6 @@
 //archivo para definir los parametros de las variables y no tener tanto codigo repetido
 
-const Joi = require('joi');
-
+import Joi from 'joi';
 
 const name = Joi.string().pattern(/^[\p{L}\p{N} ]+$/u).min(3).max(30).required().messages({
   'string.base': 'Username must be a string',
@@ -21,8 +20,5 @@ const password = Joi.string().pattern(/^[a-zA-Z0-9\-\_\@\#\$\%\&\*\!\?\.\,]+$/).
   'any.required': 'Password is required'
 });
 
-module.exports = {
-  name,
-  email,
-  password
-}
+
+export const variables = { name, email, password }

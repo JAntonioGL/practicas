@@ -1,6 +1,6 @@
-const { Pool } = require('pg')
+import { Pool } from 'pg';
 
-require('dotenv').config();
+import 'dotenv/config';//importamos directo modulo para .env
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
@@ -10,5 +10,4 @@ const pool = new Pool({
   max: 10,
   idleTimeoutMillis: 1000,
 })
-
-module.exports = pool; 
+export default pool; 

@@ -1,5 +1,7 @@
-const variables = require('./joiDefinitions');
+import { variables } from './joiDefinitions.js';
+
 const Joi = require('joi');
+
 const userRegisterSchema = Joi.object({
   name: variables.name,
   email: variables.email,
@@ -16,9 +18,4 @@ const userFindEmailSchema = Joi.object({
   email: variables.email
 });
 
-
-module.exports = {
-  userRegisterSchema,
-  userLoginSchema,
-  userFindEmailSchema
-}
+export const JOI_SCHEMAS = { userRegisterSchema, userLoginSchema, userFindEmailSchema }
