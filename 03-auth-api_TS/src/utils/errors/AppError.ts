@@ -1,8 +1,8 @@
 export class AppError extends Error {
   public statusCode: number;
   public errorCode: string;
-  public details: any;
-  constructor(message: string, statusCode: number, errorCode: string, details = null) {
+  public details: object | null | string;
+  constructor(message: string, statusCode: number, errorCode: string, details: object | string | null = null) {
     super(message); // Llama al constructor del Error original de JS
     this.statusCode = statusCode;
     this.errorCode = errorCode;

@@ -1,21 +1,21 @@
+import type { IRegistroPayload } from '../../types/user/userInterfaces.js';
 import { variables } from './joiDefinitions.js';
 
-const Joi = require('joi');
+import Joi from 'joi';
 
-const userRegisterSchema = Joi.object({
+export const userRegisterSchema = Joi.object<IRegistroPayload>({
   name: variables.name,
   email: variables.email,
   password: variables.password,
   //confirmPassword: Joi.ref('password')
 });
 
-const userLoginSchema = Joi.object({
+export const userLoginSchema = Joi.object({
   email: variables.email,
   password: variables.password,
 });
 
-const userFindEmailSchema = Joi.object({
+export const userFindEmailSchema = Joi.object({
   email: variables.email
 });
 
-export const JOI_SCHEMAS = { userRegisterSchema, userLoginSchema, userFindEmailSchema }

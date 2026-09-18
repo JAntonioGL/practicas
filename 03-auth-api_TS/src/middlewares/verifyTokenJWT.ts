@@ -1,11 +1,16 @@
-require('dotenv');
-const jwt = require('jsonwebtoken');
+import 'dotenv/config'
+import { AppError } from '../utils/errors/AppError.js'; //importación del objeto para errores
+import { ERROR_CATALOG } from '../utils/errors/errorCatalog.js'; //importación de la biblioteca de errores
+import { type Request, type Response, type NextFunction } from 'express'; //importamos los types por que no reconoce next
+import jwt from 'jsonwebtoken';
+import { getEnv } from '../validators/envValidator.js';
+import type { IPayloadResTokenJWT } from '../types/user/userInterfaces.js';
 
-const AppError = require('../utils/AppError.js'); //importación del objeto para errores
-const ERROR_CATALOG = require('../utils/errorCatalog.js'); //importación de la biblioteca de errores
 
-
-const verifyTokenJWT = (req, res, next) => {
+const JWT_SECRET = getEnv('JWT_SECRET');
+export const verifyTokenJWT = (req: Request,
+  res: Response,
+  next: NextFunction) => {
   const auth = req.headers.authorization || '';
   const errInfo = ERROR_CATALOG.PERMISSION_DENIED;
 
@@ -18,7 +23,7 @@ const verifyTokenJWT = (req, res, next) => {
     // Cortamos la palabra "Bearer " para quedarnos solo con el churrete de texto
     const token = auth.slice(7);
     // 2. Verificamos matemáticamente el token. Si algo falla, estalla y se va al catch.
-    const payload = jwt.verify(token, process.env.JWT_SECRET)
+    const payload = jwt.verify(token, JWT_SECRET) as IPayloadResTokenJWT;
     // 3. ¡Lo logramos! Le pegamos la info a la caja (req) para que el Controlador la use.
     req.user = payload;
     // 4. Que pase el siguiente
@@ -33,5 +38,3 @@ const verifyTokenJWT = (req, res, next) => {
   }
 
 }
-
-module.exports = verifyTokenJWT;

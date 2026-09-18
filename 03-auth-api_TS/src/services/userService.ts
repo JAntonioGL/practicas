@@ -1,5 +1,5 @@
 import pool from '../../config/db.js';
-import type { IUsuarioDB, IPushUsuarioDB } from '../types/user/userInterface.js';
+import type { IUsuarioDB, IPushUsuarioDB } from '../types/user/userInterfaces.js';
 
 //servicio para obtener todos los usuarios de la db
 export const getUsersDb = async (): Promise<IUsuarioDB[]> => {
@@ -34,10 +34,10 @@ export const pushUserDB = async (userNew: IPushUsuarioDB): Promise<IUsuarioDB> =
 }
 
 //servicio para marcar un login en la DB
-export const makeLoginDB = async (id: number): Promise<IUsuarioDB> => {
+export const makeLoginDB = async (id: string): Promise<IUsuarioDB> => {
 
   const fecha: Date = new Date();
-  const payload: [number, Date] = [id, fecha];
+  const payload: [string, Date] = [id, fecha];
   const { rows } = await pool.query<IUsuarioDB>(
     'UPDATE usuarios SET ultimo_login_en = $2 WHERE id = $1 RETURNING *', payload
   );

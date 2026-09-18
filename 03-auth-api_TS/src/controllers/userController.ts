@@ -1,16 +1,18 @@
-const userServices = require('../services/userService.js'); //importación de las funciones para leer y escribir el json
-const bcrypt = require('bcryptjs');//importación del modulo bycript para usar encrpitación
-const userValidationsErrors = require('../validators/userValidator.js')
-const ERROR_CATALOG = require('../utils/errorCatalog.js'); //importación de la biblioteca de errores
-const jwtGenerateToken = require('../utils/jwtUtils.js');
-const AppError = require('../utils/AppError.js');
-const generateAccessToken = require('../utils/jwtUtils.js');
+import type { Request, Response, NextFunction } from "express";
+
+import { getUsersDb, makeLoginDB, pushUserDB } from '../services/userService.js'; //importación de las funciones para leer y escribir el json
+import bcrypt from "bcryptjs";//importación del modulo bycript para usar encrpitación
+import { checkDataLogin, checkDataRegister, checkEmailNotTaken, checkPassword } from '../validators/userValidator.js';
+import { generateAccessToken } from '../utils/jwtUtils.js';
+import { } from '../utils/jwtUtils.js';
+import type { IPushUsuarioDB, IRegistroPayload } from "../types/user/userInterfaces.js";
 
 
 //función para obtener los usuarios 
-async function getAllUsersDB(req, res) {
+export async function getAllUsersDB(req: Request,
+  res: Response, next: NextFunction) {
   try {
-    const users = await userServices.getUsersDb(); //obtenemos de la db los ususarios
+    const users = await getUsersDb(); //obtenemos de la db los ususarios
     // console.log(users)
     res.status(200).json({ //respuesta para el estado de la petición
       status: 'success',
@@ -25,30 +27,31 @@ async function getAllUsersDB(req, res) {
 
 
 //función para registrar un usuario nuevo
-async function registerUser(req, res, next) {
+export async function registerUser(req: Request,
+  res: Response, next: NextFunction) {
   console.log("entraron a registrar") //log para bitacora
-  const { name, email, password } = req.body; //de request tomamos los datos enviados
+  const payload = req.body as IRegistroPayload; //de request tomamos los datos enviados
   try {
 
     //verificamos que esten los 3 datos requeridos
-    await userValidationsErrors.checkDataRegister(req.body)
+    await checkDataRegister(payload)
 
 
-    await userValidationsErrors.checkEmailNotTaken(email);
+    await checkEmailNotTaken(payload.email);
 
     //si no existe continuamos...
-    const hash = await bcrypt.hash(password, 10); //usamos bcrypt para hashear el password
+    const hash = await bcrypt.hash(payload.password, 10); //usamos bcrypt para hashear el password
 
-    const userNew = {
-      nombre: name,
-      correo: email,
+    const userNew: IPushUsuarioDB = {
+      nombre: payload.name,
+      correo: payload.email,
       password_hash: hash,
       google_uid: "demo_" + Math.floor(Math.random() * (1000 - 0) + 0),
-      fmc_token: "fmc_token_demo_" + Math.floor(Math.random() * (1000 - 0) + 0)
+      fcm_token: ("fmc_token_demo_" + Math.floor(Math.random() * (1000 - 0) + 0)),
 
     }; //armamos el objeto con los datos para el nuevo usuario
 
-    await userServices.pushUserDB(userNew); //lo insertamos en la DB
+    await pushUserDB(userNew); //lo insertamos en la DB
     res.status(200).json({ status: "success", message: "Usuario registrado" }); //mensaje de confirmación de la petición
   }
   catch (err) {
@@ -56,17 +59,17 @@ async function registerUser(req, res, next) {
   }
 }
 
-async function loginUser(req, res, next) {
+export async function loginUser(req: Request, res: Response, next: NextFunction): Promise<void> {
 
   try {
     // 1. El validador revisa que traiga todo, valida JOI y busca en BD.
     // Como el validador es async, le ponemos 'await'. Cuando termine, nos regresa el usuario.
-    const user = await userValidationsErrors.checkDataLogin(req.body);
+    const user = await checkDataLogin(req.body);
     // 2. Comparamos contraseñas
-    await userValidationsErrors.checkPassword(req.body.password, user.password_hash);
+    await checkPassword(req.body.password, user.password_hash);
 
     //3. Marcamos el login en la DB
-    await userServices.makeLoginDB(user.id);
+    await makeLoginDB(user.id);
 
 
     res.status(200).json({ status: "success", token: generateAccessToken(user) }); //mensaje de confirmación de la petición
@@ -79,5 +82,3 @@ async function loginUser(req, res, next) {
 
 }
 
-//exportación de funciones
-module.exports = { getAllUsersDB, registerUser, loginUser }

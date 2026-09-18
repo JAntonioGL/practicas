@@ -1,9 +1,14 @@
-require('dotenv').config();
-const AppError = require('../utils/AppError.js'); //importación del objeto para errores
-const ERROR_CATALOG = require('../utils/errorCatalog.js'); //importación de la biblioteca de errores
+import 'dotenv/config'
+import { AppError } from '../utils/errors/AppError.js'; //importación del objeto para errores
+import { ERROR_CATALOG } from '../utils/errors/errorCatalog.js'; //importación de la biblioteca de errores
+import { type Request, type Response, type NextFunction } from 'express'; //importamos los types por que no reconoce next
 
 //función para verificar que tiene el AdminKey en la cabecera, si lo tiene verifica que coincida con el .env
-const verifyAdminKey = (req, res, next) => {
+export const verifyAdminKey = ( // Mejor práctica: No sabemos qué cayó aquí
+  req: Request,
+  res: Response,
+  next: NextFunction) => {
+
   const key = req.headers['x-admin-api-key']; //cabecera requerida
   if (!key) { //no la trae explota
     const errInfo = ERROR_CATALOG.PERMISSION_DENIED;
@@ -15,4 +20,3 @@ const verifyAdminKey = (req, res, next) => {
   next();//todo piola pasa
 }
 
-module.exports = verifyAdminKey;

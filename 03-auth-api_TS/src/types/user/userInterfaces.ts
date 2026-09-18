@@ -5,12 +5,8 @@ export interface IRegistroPayload {
 }
 
 export interface ILoginPayload {
-  nombre: string;
   email: string;
-}
-
-export interface IFindEmail {
-  email: string;
+  password: string;
 }
 
 export interface IUsuarioDB {
@@ -28,5 +24,10 @@ export interface IPushUsuarioDB {
   correo: string,
   password_hash: string,
   google_uid: string,
-  fcm_token: string
+  fcm_token: string,
+}
+
+export interface IPayloadResTokenJWT {
+  id: string,
+  correo: string,
 }

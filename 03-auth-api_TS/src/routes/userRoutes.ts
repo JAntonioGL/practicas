@@ -1,10 +1,11 @@
-const express = require('express'); //importación del modulo express para la aplicación
-const userController = require('../controllers/userController.js'); //importación de funciones controladores para las peticiónes
-const verifyAdminKey = require('../middlewares/verifyAdminKey.js')//middleware que verifica si el endpoint requiere
+import express, { Router} from 'express'; //importación del modulo express para la aplicación
+import {getAllUsersDB,loginUser,registerUser} from '../controllers/userController.js'; //importación de funciones controladores para las peticiónes
+import {verifyAdminKey} from '../middlewares/verifyAdminKey.js';//middleware que verifica si el endpoint requiere
 
-const router = express.Router(); //definición para las rutas en express
+const userRoutes : Router = express.Router();
 
-router.get('/', verifyAdminKey, userController.getAllUsersDB);//petición GET para obtener los usuarios existentes
-router.post('/register', userController.registerUser)//petición POST para guardar un usuario
-router.post('/login', userController.loginUser)//petición POST para loguear un usuario
-module.exports = router; //exportación de las rutas
+userRoutes.get('/', verifyAdminKey, getAllUsersDB);//petición GET para obtener los usuarios existentes
+userRoutes.post('/register', registerUser)//petición POST para guardar un usuario
+userRoutes.post('/login', loginUser)//petición POST para loguear un usuario
+
+export default userRoutes;

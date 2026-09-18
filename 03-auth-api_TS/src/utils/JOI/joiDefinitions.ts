@@ -2,6 +2,7 @@
 
 import Joi from 'joi';
 
+
 const name = Joi.string().pattern(/^[\p{L}\p{N} ]+$/u).min(3).max(30).required().messages({
   'string.base': 'Username must be a string',
   'string.empty': 'Username is required',

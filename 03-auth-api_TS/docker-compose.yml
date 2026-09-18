@@ -7,15 +7,12 @@ services:
       - "3000:3000" #de mi puerto 3000 al 3000 del contenedor
     volumes:
       #hacemos un copy manual de cada ruta para que no colisione con pnpm, un volumen anonimo causa condlicto en windows
-      - ./index.js:/home/app/index.js
+      - ./index.ts:/home/app/index.ts
       - ./src:/home/app/src
-      - ./utils:/home/app/utils
       - ./package.json:/home/app/package.json
       - ./data:/home/app/data
       - ./config:/home/app/config
-      - ./services:/home/app/services
       - ./.env:/home/app/.env
-      - ./validators:/home/app/validators
 
     networks:
       - experimento_network #una red interna de docker para experimentos
