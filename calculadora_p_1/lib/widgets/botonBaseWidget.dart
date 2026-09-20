@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart'; //importa la libreria de flutter que contiene todos los widgets
 
- 
- // Método auxiliar para crear un botón responsivo sin medidas fijas que rompan la interfaz
-  Widget construirBoton({
-    required String texto,
-    Color? colorFondo,
-    Color colorTexto = Colors.white,
-    required VoidCallback alPresionar,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
+// Método auxiliar para crear un botón responsivo sin medidas fijas que rompan la interfaz
+Widget construirBoton({
+  required String texto,
+  Color? colorFondo,
+  Color colorTexto = Colors.white,
+  required VoidCallback alPresionar,
+}) {
+  return Expanded(
+    child: Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: SizedBox.expand(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: colorFondo ?? Colors.grey[850],
@@ -34,5 +34,6 @@ import 'package:flutter/material.dart'; //importa la libreria de flutter que con
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
