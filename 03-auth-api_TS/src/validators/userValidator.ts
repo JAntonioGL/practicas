@@ -2,8 +2,7 @@ import { getUsersDb, findUserByEmailDb, pushUserDB, makeLoginDB } from '../servi
 import { AppError } from '../utils/errors/AppError.js'; //importación del objeto para errores
 import { ERROR_CATALOG } from '../utils/errors/errorCatalog.js'; //importación de la biblioteca de errores
 import bcrypt from 'bcryptjs';//importación del modulo bycript para usar encrpitación
-import type { ILoginPayload, IRegistroPayload, IUsuarioDB } from '../types/user/userInterfaces.js';
-import type { } from '../types/errors/errorsInterfaces.js'
+import type { ILoginPayload, IRegistroPayload } from '../types/user/userInterfaces.js';
 import { userRegisterSchema, userLoginSchema, userFindEmailSchema } from '../utils/JOI/joiSchemas.js'
 
 //validador de datos para un regstro
