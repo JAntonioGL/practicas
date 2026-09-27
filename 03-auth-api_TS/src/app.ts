@@ -1,7 +1,7 @@
 import express, { type Express, Router } from 'express';//importamos express
 import userRoutes from './routes/userRoutes.js';//importamos las rutas de usuariosJSON
 import { errorHandler } from './middlewares/errorHandler.js';//middleware que captura errores
-import { setupSwagger } from './utils/swagger.js'; // Importamos la configuración de swagger
+import { setupSwagger } from './utils/swagger/swagger.js'; // Importamos la configuración de swagger
 
 
 const app: Express = express(); //definimos la app express

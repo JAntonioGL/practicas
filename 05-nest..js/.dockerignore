@@ -5,4 +5,3 @@ Dockerfile
 docker-compose.yml
 .env
 .pnpm-store
-dist

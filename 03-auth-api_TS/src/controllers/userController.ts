@@ -63,8 +63,9 @@ export async function loginUser(req: Request, res: Response, next: NextFunction)
 
   try {
     // 1. El validador revisa que traiga todo, valida JOI y busca en BD.
-    // Como el validador es async, le ponemos 'await'. Cuando termine, nos regresa el usuario.
+    // Como el validador es async, le ponemos 'await'. Cuando termine, nos regresa el usuario ya de la DB con el hash guardado.
     const user = await checkDataLogin(req.body);
+    
     // 2. Comparamos contraseñas
     await checkPassword(req.body.password, user.password_hash);
 

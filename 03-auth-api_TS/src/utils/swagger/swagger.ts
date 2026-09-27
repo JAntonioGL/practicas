@@ -4,11 +4,20 @@ import { type Express } from "express";
 
 const options = {
     definition: {
-        openapi: "3.0.0",
+        openapi: "3.0.4",
         info: {
-            title: 'Auth API - YoVerifico',
+            title: 'Swagger Yo Verifico - OpenAPI 3.0',
             version: "1.0.0",
-            description: "Documentacion de la API en TS",
+            description: "Esta es la documentación basada en OpenAPI para la API de  Yo Verifico.",
+            termsOfService: "https://yoverifico.com.mx/terminos",
+            contact: {
+                email: "soporte@yoverifico.com.mx"
+            },
+            servers: [
+                {
+                    url: "https://api.yoverifico.com.mx/"
+                }
+            ],
         },
         components: {
             schemas: {
@@ -24,7 +33,7 @@ const options = {
             }
         }
     },
-    apis: ['./src/routes/*.ts'],
+    apis: ['./src/utils/swagger/routesFiles/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
