@@ -122,6 +122,11 @@ Widget construirTeclado(BuildContext context) {
                   context.read<CalculadoraProvider>().presionarNumero('0'),
             ),
             construirBoton(
+              texto: '.',
+              alPresionar: () =>
+                  context.read<CalculadoraProvider>().presionarNumero('.'),
+            ),
+            construirBoton(
               texto: '=',
               colorFondo: Colors.green[700],
               alPresionar: () =>
