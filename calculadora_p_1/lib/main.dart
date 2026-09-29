@@ -16,8 +16,8 @@ void main() async {
 
   //configurar las opciones de las ventanas
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(400, 600),
-    minimumSize: Size(400, 600),
+    size: Size(400, 800),
+    minimumSize: Size(400, 800),
     center: true,
     title: 'Calculadora',
   );
