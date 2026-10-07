@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Login extends StatelessWidget {
-  const Login({super.key});
+  Login({super.key});
+
+  final _formKey = GlobalKey<FormState>();
+
+   // Creamos los "micrófonos"
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

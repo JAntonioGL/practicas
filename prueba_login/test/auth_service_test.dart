@@ -7,14 +7,15 @@ void main() {
 
     // setUp se ejecuta antes de cada prueba (test)
     setUp(() {
-      authService = AuthService();//instanciamos la clase AuthService, para que pueda ser usada en las pruebas
+      authService = AuthService(); //instanciamos la clase AuthService, para que pueda ser usada en las pruebas
     });
 
     test('Debe registrar un nuevo usuario exitosamente', () async {
       // OJO: Si ejecutas estas pruebas varias veces, el registro podría fallar
       // si tu API no permite registrar el mismo email dos veces.
       // Puedes cambiar el email dinámicamente si es necesario.
-      final uniqueEmail = 'test_${DateTime.now().millisecondsSinceEpoch}@test.com';
+      final uniqueEmail =
+          'test_${DateTime.now().millisecondsSinceEpoch}@test.com';
 
       bool resultadoRegistro = await authService.register(
         "Usuario Test Unitario",
