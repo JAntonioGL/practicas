@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-Widget BotonBase({
+
+Widget botonBase({
   required String texto,
   Color? colorFondo,
   Color? colorTexto,
