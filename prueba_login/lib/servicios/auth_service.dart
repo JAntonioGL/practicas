@@ -9,8 +9,10 @@ import 'package:flutter/foundation.dart';
 //aqui van los servicios que tiene que ver con Usuarios y Auteticación
 
 class AuthService {
-  // La URL de tu API (Asegúrate de cambiar localhost por 10.0.2.2 si usas emulador Android)
-  final String _baseUrl = 'http://localhost:3000/api/users';
+  // La URL de tu API ( cambiar la dir ip a localhost cuando se compila en windows, o usas la ip de la compu cuando se compila 
+  ////en dispositivos fisicos y que esten en la misma red.
+  // y por 10.0.2.2 si usas emulador Android)
+  final String _baseUrl = 'http://localhost:3000/api/users'; 
 
   // Funciones para dar servicios
   Future<bool> login(String email, String password) async {
