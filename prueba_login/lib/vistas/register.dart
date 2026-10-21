@@ -35,7 +35,7 @@ class _RegisterState extends State<Register> {
       ),
       extendBodyBehindAppBar: true,
 
-      body:  Container(
+      body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
@@ -154,16 +154,21 @@ class _RegisterState extends State<Register> {
                             Row(
                               children: [
                                 BotonGlass(
-                                  texto: 'Registro',
+                                  texto: 'Crear Cuenta',
                                   cargando: auth.estaCargando,
-                                  presionar: () {
+                                  presionar: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      context
+                                      final exito = await context
                                           .read<AuthController>()
-                                          .intentarLogin(
+                                          .intentarRegister(
+                                            _nombreController.text,
                                             _emailController.text,
                                             _passwordController.text,
                                           );
+                                      if (!context.mounted) return;
+                                      if (exito) {
+                                        Navigator.pop(context, true);
+                                      }
                                     }
                                   },
                                 ),

@@ -28,6 +28,7 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     // 👂 "Escuchamos" el estado del AuthController:
     //final auth = context.watch<AuthController>();
@@ -158,20 +159,26 @@ class _LoginState extends State<Login> {
                         );
                       },
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     TextButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        //
+                        context.read<AuthController>().limpiarError();
+                        final registrado = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const Register(),
                           ),
                         );
+                        if(!context.mounted) return;
+                        if(registrado == true){
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cuenta creada, ahora inicia sesion')));
+                        }
                       },
-                      child: Text('¿No tienes cuenta? Registrate'),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white70,
                       ),
+                      child: const Text('¿No tienes cuenta? Registrate'),
                     ),
                   ],
                 ),

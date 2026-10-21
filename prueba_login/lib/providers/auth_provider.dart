@@ -48,7 +48,7 @@ class AuthController extends ChangeNotifier {
     String password,
   ) async {
     // LOGICA 1: Validar antes de ir al servidor
-    if (email.isEmpty || password.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {//validamos que ningun campo este vacio para el registro 
       _mensajeDeError = "Oye, llena todos los campos primero.";
       notifyListeners(); // <--- Le grita a la vista: ¡Redibújate con este error!
       return false; // Detiene la ejecución aquí
@@ -65,17 +65,12 @@ class AuthController extends ChangeNotifier {
     // LOGICA 4: Reaccionar a lo que dijo el servicio
     _estaCargando = false; // Ya terminamos de cargar
 
-    if (exito) {
-      // Todo salió bien, el Controlador no hace nada más, la Vista se encargará de navegar
-      return true;
-    } else {
+    if (!exito) {
       _mensajeDeError = "No se pudo crear la cuenta, Intenta de nuevo";
-      return false;
-    }
-
-    //notifyListeners(); // Le vuelve a gritar a la vista para que quite el circulito
+    } 
+    notifyListeners();
+    return exito;
   }
-
   void limpiarError() {
     _mensajeDeError = '';
     notifyListeners();
