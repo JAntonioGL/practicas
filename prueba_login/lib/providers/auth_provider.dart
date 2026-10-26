@@ -14,12 +14,12 @@ class AuthController extends ChangeNotifier {
   String get mensajeDeError => _mensajeDeError;
 
   // 3. La función que la Vista va a llamar cuando aprieten el botón
-  Future<void> intentarLogin(String email, String password) async {
+  Future<bool> intentarLogin(String email, String password) async {
     // LOGICA 1: Validar antes de ir al servidor
     if (email.isEmpty || password.isEmpty) {
       _mensajeDeError = "Oye, llena todos los campos primero.";
       notifyListeners(); // <--- Le grita a la vista: ¡Redibújate con este error!
-      return; // Detiene la ejecución aquí
+      return false; // Detiene la ejecución aquí
     }
 
     // LOGICA 2: Cambiar el estado a "Cargando"
@@ -33,13 +33,12 @@ class AuthController extends ChangeNotifier {
     // LOGICA 4: Reaccionar a lo que dijo el servicio
     _estaCargando = false; // Ya terminamos de cargar
 
-    if (exito) {
-      // Todo salió bien, el Controlador no hace nada más, la Vista se encargará de navegar
-    } else {
+    if (!exito) {
       _mensajeDeError = "Credenciales incorrectas, intenta de nuevo.";
     }
 
     notifyListeners(); // Le vuelve a gritar a la vista para que quite el circulito
+    return exito;
   }
 
   Future<bool> intentarRegister(

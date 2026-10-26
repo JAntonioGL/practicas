@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:prueba_login/vistas/bienvenida.dart';
 import 'package:prueba_login/vistas/register.dart';
 import 'package:prueba_login/widgets/boton_glass.dart';
 import 'package:prueba_login/providers/auth_provider.dart';
@@ -142,14 +143,25 @@ class _LoginState extends State<Login> {
                                 BotonGlass(
                                   texto: 'Iniciar Sesión',
                                   cargando: auth.estaCargando,
-                                  presionar: () {
+                                  presionar: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      context
+                                      final exito = await context
                                           .read<AuthController>()
                                           .intentarLogin(
                                             _emailController.text,
                                             _passwordController.text,
                                           );
+                                      if (!context.mounted) return;
+                                      if (exito) {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Bienvenida(
+                                              email: _emailController.text,
+                                            ),
+                                          ),
+                                        );
+                                      }
                                     }
                                   },
                                 ),
@@ -170,7 +182,7 @@ class _LoginState extends State<Login> {
                             builder: (context) => const Register(),
                           ),
                         );
-                        if(!context.mounted) return;
+                        if(!context.mounted) return;//revisa si ya esta en el arbol de widgets de flutter
                         if(registrado == true){
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cuenta creada, ahora inicia sesion')));
                         }
