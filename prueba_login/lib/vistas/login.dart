@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:prueba_login/core/validadores.dart';
 import 'package:prueba_login/vistas/bienvenida.dart';
 import 'package:prueba_login/vistas/register.dart';
 import 'package:prueba_login/widgets/boton_glass.dart';
@@ -91,16 +92,9 @@ class _LoginState extends State<Login> {
                       hintText: 'Correo electrónico',
                       esPassword: false,
                       icono: Icons.email_outlined,
-                      validador: (valor) {
-                        if (valor == null || valor.isEmpty) {
-                          return 'El correo es obligatorio';
-                        }
-                        if (!valor.contains('@')) {
-                          return 'Escribe un correo válido';
-                        }
-                        return null;
-                      },
+                      validador:  Validadores.email,
                     ),
+
                     const SizedBox(height: 16),
                     // Campo de Contraseña
                     CampoTexto(
@@ -108,15 +102,7 @@ class _LoginState extends State<Login> {
                       hintText: 'Contraseña',
                       esPassword: true,
                       icono: Icons.lock_outline,
-                      validador: (valor) {
-                        if (valor == null || valor.isEmpty) {
-                          return 'La contraseña es obligatoria';
-                        }
-                        if (valor.length < 6) {
-                          return 'Mínimo 6 caracteres';
-                        }
-                        return null;
-                      },
+                      validador: Validadores.password,
                     ),
 
                     const SizedBox(height: 20),
