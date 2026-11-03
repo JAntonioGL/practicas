@@ -28,7 +28,7 @@ class AuthController extends ChangeNotifier {
     notifyListeners(); // La vista mostrará un circulito girando
 
     // LOGICA 3: Llamar al servicio
-    bool exito = await _servicio.login(email, password);
+    String exito = await _servicio.login(email, password);
 
     // LOGICA 4: Reaccionar a lo que dijo el servicio
     _estaCargando = false; // Ya terminamos de cargar
@@ -41,6 +41,8 @@ class AuthController extends ChangeNotifier {
     return exito;
   }
 
+
+//controlador de registro------------------------------------------------------
   Future<bool> intentarRegister(
     String name,
     String email,

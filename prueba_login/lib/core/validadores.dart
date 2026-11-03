@@ -25,13 +25,15 @@ class Validadores {
   }
 
 //validacion para la contraseña o password
+static const int minPassword = 6;//aqui podemos cambiar el numero de caracrteres admitido 
   static String? password(String? valor){
     final error = requerido(valor);
     if(error != null) return error;//si está vacio regresa error de camporequerido 
 
-    //pendiente ver si se elimina los epsacios en contraseñas  
-    if (valor!.length < 6){
-      return Mensajes.passwordInvalido;
+    //pendiente ver si se elimina los espacios en contraseñas -corrección a una contraseña no se le quitan espacios en 
+    //blanco porque también son validos y si lo vamos a guardar y enviar tiene que mandarse tal cual 
+    if (valor!.length < minPassword){
+      return Mensajes.passwordCorta(minPassword);
     }
     return null;
   }

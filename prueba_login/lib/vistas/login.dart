@@ -102,11 +102,12 @@ class _LoginState extends State<Login> {
                       hintText: 'Contraseña',
                       esPassword: true,
                       icono: Icons.lock_outline,
-                      validador: Validadores.password,
+                      validador: Validadores.requerido,
                     ),
 
                     const SizedBox(height: 20),
 
+                    //inicia el boton de iniciar sesión ----------------------------------
                     Consumer<AuthController>(
                       builder: (context, auth, child) {
                         return Column(
@@ -158,6 +159,7 @@ class _LoginState extends State<Login> {
                       },
                     ),
                     const SizedBox(height: 12),
+                    //inicia boton de registrarse y navegación a pantallas 
                     TextButton(
                       onPressed: () async {
                         //
