@@ -20,3 +20,7 @@ class ErrorServidor extends AppError {
 class ErrorDesconocido extends AppError {
   const ErrorDesconocido();
 }
+
+class CorreoYaRegistrado extends AppError{
+  const CorreoYaRegistrado();
+}

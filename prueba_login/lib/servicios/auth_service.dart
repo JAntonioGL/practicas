@@ -32,6 +32,7 @@ class AuthService {
     final http.Response response;
 
     try {
+      //try controla y maneja errores excepciones durante la ejecución
       //hacemos la peticion POST login, esperamos await que es la respuesta de la peticion
       response = await http
           .post(url, headers: headers, body: body)
@@ -46,11 +47,12 @@ class AuthService {
 
     //si llegamos aquí, el servidor si respondió y revisamos que devolvio
     switch (response.statusCode) {
-      case >= 200 && < 300:
+      case >= 200 && < 300://solo he podido comprobar el 200 que es OK, no he visto ningun 300 ni un inter entre ellos 
         return; // éxito, no hay nada que lanzar
-      case 401:
+      case 400 || 406://el 406 responde cuando el correo esta mal o no existe ese correo, o contra que no existe o esta mal 
+      //y el 400 responde si esta mal el correo especificamente 
         throw const CredencialesInvalidas();
-      case >= 500:
+      case >= 500:// 500 responde cuando el fromato del json esta mal, no he visto otro comportamiento para el 500
         throw ErrorServidor(response.statusCode);
       default:
         debugPrint(

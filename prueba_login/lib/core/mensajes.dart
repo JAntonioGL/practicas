@@ -16,6 +16,7 @@ class Mensajes {
       CredencialesInvalidas() => 'Correo o contraseña incorrectos.',
       ErrorServidor() => 'Tuvimos un problema. Intenta más tarde.',
       ErrorDesconocido() => 'Algo salió mal. Intenta de nuevo.',
+      CorreoYaRegistrado() => 'El correo ya ha sido registrado',
     };
   }
 }

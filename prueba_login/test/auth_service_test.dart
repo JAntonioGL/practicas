@@ -30,13 +30,12 @@ void main() {
     test('Debe iniciar sesión exitosamente con credenciales válidas', () async {
       // Aquí asumimos que el usuario 'test@test.com' ya existe en tu DB
       // gracias a la prueba anterior de test_api.dart
-      bool resultadoLogin = await authService.login(
-        "test@test.com",
-        "mipassword123",
+      // Como login() ahora es Future<void> y lanza excepciones si falla,
+      // comprobamos que el Future se complete sin lanzar ningún error:
+      await expectLater(
+        authService.login("test@test.com", "mipassword123"),
+        completes,
       );
-
-      // Comprobamos que el resultado sea 'true'
-      expect(resultadoLogin, isTrue);
     });
   });
 }
