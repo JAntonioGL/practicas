@@ -24,3 +24,7 @@ class ErrorDesconocido extends AppError {
 class CorreoYaRegistrado extends AppError{
   const CorreoYaRegistrado();
 }
+
+class DatosInvalidos extends AppError{
+  const DatosInvalidos();
+}

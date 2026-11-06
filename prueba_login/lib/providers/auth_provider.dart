@@ -26,9 +26,15 @@ class AuthController extends ChangeNotifier {
       await _servicio.login(email, password); // si no lanza, fue éxito
       return true;
     } on AppError catch (e) {
-      _mensajeDeError = Mensajes.deError(e); // 
+      _mensajeDeError = Mensajes.deError(e); //
       return false;
-    } finally {//con finally hace que lo que este detro se ejecute si o si no importa lo que haya salido antes 
+    } catch (e) {
+      // cualquier otro imprevisto
+      debugPrint('Error no controlado: $e');
+      _mensajeDeError = Mensajes.deError(const ErrorDesconocido());
+      return false;
+    } finally {
+      //con finally hace que lo que este detro se ejecute si o si no importa lo que haya salido antes
       _estaCargando = false; // se ejecuta SIEMPRE
       notifyListeners();
     }
@@ -40,30 +46,22 @@ class AuthController extends ChangeNotifier {
     String email,
     String password,
   ) async {
-    // LOGICA 1: Validar antes de ir al servidor
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      //validamos que ningun campo este vacio para el registro
-      _mensajeDeError = "Oye, llena todos los campos primero.";
-      notifyListeners(); // <--- Le grita a la vista: ¡Redibújate con este error!
-      return false; // Detiene la ejecución aquí
-    }
-
-    // LOGICA 2: Cambiar el estado a "Cargando"
+    // LOGICA : Cambiar el estado a "Cargando"
     _estaCargando = true;
     _mensajeDeError = '';
     notifyListeners(); // La vista mostrará un circulito girando
 
-    // LOGICA 3: Llamar al servicio
-    bool exito = await _servicio.register(name, email, password);
-
-    // LOGICA 4: Reaccionar a lo que dijo el servicio
-    _estaCargando = false; // Ya terminamos de cargar
-
-    if (!exito) {
-      _mensajeDeError = "No se pudo crear la cuenta, Intenta de nuevo";
+    try {
+      // LOGICA : Llamar al servicio
+      await _servicio.register(name, email, password);
+      return true;
+    } on AppError catch (e) {
+      _mensajeDeError = Mensajes.deError(e);
+      return false;
+    } finally {
+      _estaCargando = false;
+      notifyListeners();
     }
-    notifyListeners();
-    return exito;
   }
 
   void limpiarError() {

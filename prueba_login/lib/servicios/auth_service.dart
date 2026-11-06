@@ -40,19 +40,21 @@ class AuthService {
     } on SocketException {
       //no hay red / el servidor no responde
       throw const SinConexion();
+    } on http.ClientException {
+      throw const SinConexion();
     } on TimeoutException {
-      // tardó demasiado
+      // tardó demasiado, pasaron mas de 10 segundos
       throw const SinConexion();
     }
 
     //si llegamos aquí, el servidor si respondió y revisamos que devolvio
     switch (response.statusCode) {
-      case >= 200 && < 300://solo he podido comprobar el 200 que es OK, no he visto ningun 300 ni un inter entre ellos 
+      case >= 200 && < 300: //solo he podido comprobar el 200 que es OK, no he visto ningun 300 ni un inter entre ellos
         return; // éxito, no hay nada que lanzar
-      case 400 || 406://el 406 responde cuando el correo esta mal o no existe ese correo, o contra que no existe o esta mal 
-      //y el 400 responde si esta mal el correo especificamente 
+      case 400 || 406: //el 406 responde cuando el correo esta mal o no existe ese correo, o contra que no existe o esta mal
+        //y el 400 responde si esta mal el correo especificamente
         throw const CredencialesInvalidas();
-      case >= 500:// 500 responde cuando el fromato del json esta mal, no he visto otro comportamiento para el 500
+      case >= 500: // 500 responde cuando el fromato del json esta mal, no he visto otro comportamiento para el 500
         throw ErrorServidor(response.statusCode);
       default:
         debugPrint(
@@ -63,7 +65,7 @@ class AuthService {
   }
 
   //servicio de registro--------------------------------------------------------
-  Future<bool> register(String name, String email, String password) async {
+  Future<void> register(String name, String email, String password) async {
     final url = Uri.parse("$_baseUrl/register");
 
     //se define la cabecera de la petición
@@ -76,22 +78,38 @@ class AuthService {
       'password': password,
     });
 
+    final http.Response response;
     try {
       //hacemos la peticion POST login, esperamos await que es la respuesta de la peticion
-      final response = await http.post(url, headers: headers, body: body);
+      //si no hay respuesta en esos 15 seg devuele un timeoutException y así se puede capturar con timeoutexception o socketexcpetion
+      response = await http
+          .post(url, headers: headers, body: body)
+          .timeout(const Duration(seconds: 15));
+    } on SocketException {
+      // on nos dice que si ese eeror especifico pasa haga lo que viene en {}
+      throw const SinConexion(); //lanza el error
+    } on TimeoutException {
+      throw const SinConexion();
+    }
 
-      //si la peticion fue exitosa (codigos 200-299)
-      if (response.statusCode == 200) {
-        debugPrint("Registro exitoso");
-        return true;
-      } else {
-        //por si algo falla con el login
-        debugPrint("Error en Registro: ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      debugPrint('Error de red o del servidor: $e');
-      return false;
+    switch (response.statusCode) {
+      case >= 200 && < 300:
+        return;
+
+      case 400:
+        throw const DatosInvalidos();
+
+      case 409:
+        throw const CorreoYaRegistrado(); //respondee cuando se intenta registrar un correo que yua existe
+
+      case >= 500:
+        throw ErrorServidor(response.statusCode);
+
+      default:
+        debugPrint(
+          'Respuesta no esperada: ${response.statusCode} ${response.body}',
+        );
+        throw const ErrorDesconocido();
     }
   }
 }
