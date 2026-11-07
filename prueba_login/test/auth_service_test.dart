@@ -17,14 +17,16 @@ void main() {
       final uniqueEmail =
           'test_${DateTime.now().millisecondsSinceEpoch}@test.com';
 
-      bool resultadoRegistro = await authService.register(
-        "Usuario Test Unitario",
-        uniqueEmail,
-        "password123",
+      // Como register() ahora es Future<void> y lanza excepciones si falla,
+      // comprobamos que el Future se complete sin lanzar ningún error:
+      await expectLater(
+        authService.register(
+          "Usuario Test Unitario",
+          uniqueEmail,
+          "password123",
+        ),
+        completes,
       );
-
-      // Comprobamos que el resultado sea 'true'
-      expect(resultadoRegistro, isTrue);
     });
 
     test('Debe iniciar sesión exitosamente con credenciales válidas', () async {
